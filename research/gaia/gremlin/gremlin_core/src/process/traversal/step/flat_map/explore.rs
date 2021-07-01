@@ -70,6 +70,7 @@ impl FlatMapFuncGen for VertexStep {
                     params.set_filter(filter);
                 }
             }
+            params.snapshot_id = step.snapshot_id.map(|si| si.id);
             let stmt = graph.prepare_explore_vertex(direction, &params)?;
             Ok(Box::new(FlatMapStatement { tags: Arc::new(self.tags), stmt }))
         } else if step.return_type == 1 {
@@ -81,6 +82,7 @@ impl FlatMapFuncGen for VertexStep {
                     params.set_filter(filter);
                 }
             }
+            params.snapshot_id = step.snapshot_id.map(|si| si.id);
             let stmt = graph.prepare_explore_edge(direction, &params)?;
             Ok(Box::new(FlatMapStatement { tags: Arc::new(self.tags), stmt }))
         } else {

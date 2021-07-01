@@ -60,6 +60,11 @@ message StepTag {
     }
 }
 
+// The snapshot id of graph storage snapshot
+message SnapShotId {
+  int64 id = 1;
+}
+
 message GremlinStep {
   // Every gremlin step can potentially carry tags
   repeated StepTag tags = 1;
@@ -120,6 +125,8 @@ message GraphStep {
   repeated TraverserRequirement traverser_requirements = 5;
   // The properties of the entities that need to be saved
   PropKeys required_properties = 6;
+  // The snapshot id of the queried storage snapshot
+  SnapShotId snapshot_id = 7;
 }
 
 // decide a new traverser type with the requirements
@@ -144,6 +151,8 @@ message VertexStep {
   FilterChain predicates = 4;
   // The properties of the entities that need to be saved
   PropKeys required_properties = 5;
+  // The snapshot id of the queried storage snapshot
+  SnapShotId snapshot_id = 6;
 }
 
 message HasStep {
@@ -180,6 +189,8 @@ message RangeGlobalStep {
 message IdentityStep {
   // The properties of the entities that need to be saved
   PropKeys required_properties = 1;
+  // The snapshot id of the queried storage snapshot
+  SnapShotId snapshot_id = 2;
 }
 
 message WhereJoiner {}
@@ -300,6 +311,8 @@ message EdgeVertexStep {
     // The properties of the entities that need to be saved
     // todo: get properties locally without shuffle if store supports
     PropKeys required_properties = 2;
+    // The snapshot id of the queried storage snapshot
+    SnapShotId snapshot_id = 3;
 }
 
 // flatmap
