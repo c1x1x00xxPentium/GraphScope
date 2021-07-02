@@ -74,15 +74,17 @@ where
         params: &QueryParams<Vertex>,
     ) -> DynResult<Box<dyn Iterator<Item = Vertex> + Send>> {
         let store = self.store.clone();
+        // TODO(bingqing): confirm what if snapshot_id is None
+        let si = params.snapshot_id.unwrap_or(MAX_SNAPSHOT_ID);
         let schema = store
-            .get_schema(MAX_SNAPSHOT_ID)
+            .get_schema(si)
             .ok_or(str_to_dyn_error("get schema failed"))?;
         let label_ids = encode_storage_label(params.labels.as_ref(), schema.clone());
         let prop_ids = encode_storage_prop_key(params.props.as_ref(), schema.clone());
         let filter = params.filter.clone();
         let result = store
             .get_all_vertices(
-                MAX_SNAPSHOT_ID,
+                si,
                 label_ids.as_ref(),
                 None,
                 None,
@@ -100,15 +102,17 @@ where
         params: &QueryParams<Edge>,
     ) -> DynResult<Box<dyn Iterator<Item = Edge> + Send>> {
         let store = self.store.clone();
+        // TODO(bingqing): confirm what if snapshot_id is None
+        let si = params.snapshot_id.unwrap_or(MAX_SNAPSHOT_ID);
         let schema = store
-            .get_schema(MAX_SNAPSHOT_ID)
+            .get_schema(si)
             .ok_or(str_to_dyn_error("get schema failed"))?;
         let label_ids = encode_storage_label(params.labels.as_ref(), schema.clone());
         let prop_ids = encode_storage_prop_key(params.props.as_ref(), schema.clone());
         let filter = params.filter.clone();
         let result = store
             .get_all_edges(
-                MAX_SNAPSHOT_ID,
+                si,
                 label_ids.as_ref(),
                 None,
                 None,
@@ -127,19 +131,17 @@ where
         params: &QueryParams<Vertex>,
     ) -> DynResult<Box<dyn Iterator<Item = Vertex> + Send>> {
         let store = self.store.clone();
+        // TODO(bingqing): confirm what if snapshot_id is None
+        let si = params.snapshot_id.unwrap_or(MAX_SNAPSHOT_ID);
         let schema = store
-            .get_schema(MAX_SNAPSHOT_ID)
+            .get_schema(si)
             .ok_or(str_to_dyn_error("get schema failed"))?;
         let prop_ids = encode_storage_prop_key(params.props.as_ref(), schema.clone());
         let filter = params.filter.clone();
         let partition_label_vertex_ids =
             build_partition_label_vertex_ids(ids, self.partition_manager.clone());
         let result = store
-            .get_vertex_properties(
-                MAX_SNAPSHOT_ID,
-                partition_label_vertex_ids,
-                prop_ids.as_ref(),
-            )
+            .get_vertex_properties(si, partition_label_vertex_ids, prop_ids.as_ref())
             .map(move |v| to_runtime_vertex(&v));
 
         Ok(filter_limit!(result, filter, None))
@@ -151,19 +153,17 @@ where
         params: &QueryParams<Edge>,
     ) -> DynResult<Box<dyn Iterator<Item = Edge> + Send>> {
         let store = self.store.clone();
+        // TODO(bingqing): confirm what if snapshot_id is None
+        let si = params.snapshot_id.unwrap_or(MAX_SNAPSHOT_ID);
         let schema = store
-            .get_schema(MAX_SNAPSHOT_ID)
+            .get_schema(si)
             .ok_or(str_to_dyn_error("get schema failed"))?;
         let prop_ids = encode_storage_prop_key(params.props.as_ref(), schema.clone());
         let partition_label_vertex_ids =
             build_partition_label_vertex_ids(ids, self.partition_manager.clone());
         let filter = params.filter.clone();
         let result = store
-            .get_edge_properties(
-                MAX_SNAPSHOT_ID,
-                partition_label_vertex_ids,
-                prop_ids.as_ref(),
-            )
+            .get_edge_properties(si, partition_label_vertex_ids, prop_ids.as_ref())
             .map(move |e| to_runtime_edge(&e));
 
         Ok(filter_limit!(result, filter, None))
@@ -178,8 +178,10 @@ where
         let limit = params.limit.clone();
         let store = self.store.clone();
         let partition_manager = self.partition_manager.clone();
+        // TODO(bingqing): confirm what if snapshot_id is None
+        let si = params.snapshot_id.unwrap_or(MAX_SNAPSHOT_ID);
         let schema = store
-            .get_schema(MAX_SNAPSHOT_ID)
+            .get_schema(si)
             .ok_or(str_to_dyn_error("get schema failed"))?;
         let edge_label_ids = encode_storage_label(params.labels.as_ref(), schema.clone());
 
@@ -187,7 +189,7 @@ where
             let src_id = build_partition_vertex_ids(&[v], partition_manager.clone());
             let iter = match direction {
                 Direction::Out => store.get_out_vertex_ids(
-                    MAX_SNAPSHOT_ID,
+                    si,
                     src_id,
                     edge_label_ids.as_ref(),
                     None,
@@ -195,7 +197,7 @@ where
                     limit.unwrap_or(0),
                 ),
                 Direction::In => store.get_in_vertex_ids(
-                    MAX_SNAPSHOT_ID,
+                    si,
                     src_id,
                     edge_label_ids.as_ref(),
                     None,
@@ -205,7 +207,7 @@ where
                 Direction::Both => {
                     let mut iters = vec![];
                     let out_iter = store.get_out_vertex_ids(
-                        MAX_SNAPSHOT_ID,
+                        si,
                         src_id.clone(),
                         edge_label_ids.as_ref(),
                         None,
@@ -214,7 +216,7 @@ where
                     );
                     iters.push(out_iter);
                     let in_iter = store.get_in_vertex_ids(
-                        MAX_SNAPSHOT_ID,
+                        si,
                         src_id,
                         edge_label_ids.as_ref(),
                         None,
@@ -238,9 +240,11 @@ where
         params: &QueryParams<Edge>,
     ) -> DynResult<Box<dyn Statement<ID, Edge>>> {
         let store = self.store.clone();
+        // TODO(bingqing): confirm what if snapshot_id is None
+        let si = params.snapshot_id.unwrap_or(MAX_SNAPSHOT_ID);
         let partition_manager = self.partition_manager.clone();
         let schema = store
-            .get_schema(MAX_SNAPSHOT_ID)
+            .get_schema(si)
             .ok_or(str_to_dyn_error("get schema failed"))?;
         let filter = params.filter.clone();
         let limit = params.limit.clone();
@@ -251,7 +255,7 @@ where
             let src_id = build_partition_vertex_ids(&[v], partition_manager.clone());
             let iter = match direction {
                 Direction::Out => store.get_out_edges(
-                    MAX_SNAPSHOT_ID,
+                    si,
                     src_id,
                     edge_label_ids.as_ref(),
                     None,
@@ -260,7 +264,7 @@ where
                     limit.unwrap_or(0),
                 ),
                 Direction::In => store.get_in_edges(
-                    MAX_SNAPSHOT_ID,
+                    si,
                     src_id,
                     edge_label_ids.as_ref(),
                     None,
@@ -271,7 +275,7 @@ where
                 Direction::Both => {
                     let mut iter = vec![];
                     let out_iter = store.get_out_edges(
-                        MAX_SNAPSHOT_ID,
+                        si,
                         src_id.clone(),
                         edge_label_ids.as_ref(),
                         None,
@@ -281,7 +285,7 @@ where
                     );
                     iter.push(out_iter);
                     let in_iter = store.get_in_edges(
-                        MAX_SNAPSHOT_ID,
+                        si,
                         src_id,
                         edge_label_ids.as_ref(),
                         None,
