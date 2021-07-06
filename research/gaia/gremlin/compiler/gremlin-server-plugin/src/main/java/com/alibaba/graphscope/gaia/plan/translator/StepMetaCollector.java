@@ -30,6 +30,7 @@ import com.alibaba.graphscope.gaia.plan.translator.builder.MetaConfig;
 import com.alibaba.graphscope.gaia.plan.translator.builder.StepMetaBuilder;
 import com.alibaba.graphscope.gaia.plan.translator.builder.TraversalMetaBuilder;
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.tinkerpop.gremlin.process.traversal.Step;
 import org.apache.tinkerpop.gremlin.process.traversal.Traversal;
 import org.apache.tinkerpop.gremlin.process.traversal.step.ComparatorHolder;
@@ -159,7 +160,7 @@ public class StepMetaCollector extends AttributeTranslator<StepMetaBuilder, Trav
                 } else if (step instanceof PropertyMapStep) {
                     elementProperties.add(head.getObject().getElement(),
                             new StepPropertiesMeta(PropertyExtractorFactory.ValueMap.extractProperties(step), stepId));
-                } else {
+                } else if (EnumUtils.isValidEnum(LogicPlanGlobalMap.STEP.class, step.getClass().getSimpleName())) {
                     LogicPlanGlobalMap.STEP stepType = LogicPlanGlobalMap.stepType(step);
                     Optional<StepMetaRequiredInfo> metaInfoOpt = LogicPlanGlobalMap.getStepMetaRequiredInfo(stepType);
                     if (metaInfoOpt.isPresent()) {
