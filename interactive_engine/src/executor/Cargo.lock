@@ -955,6 +955,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "gs_gremlin"
+version = "0.1.0"
+dependencies = [
+ "dyn_type",
+ "gremlin_core",
+ "log 0.4.11",
+ "maxgraph-store",
+ "pegasus 0.1.0",
+ "pegasus_common",
+ "pegasus_server",
+ "structopt 0.2.18",
+ "tokio 1.7.1",
+]
+
+[[package]]
 name = "h2"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1096,9 +1111,9 @@ dependencies = [
 
 [[package]]
 name = "ipnetwork"
-version = "0.15.1"
+version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a69dd5e3613374e74da81c251750153abe3bd0ad17641ea63d43d1e21d0dbd4d"
+checksum = "02c3eaab3ac0ede60ffa41add21970a7df7d91772c03383aac6c2c3d53cc716b"
 dependencies = [
  "serde",
 ]
@@ -1173,7 +1188,7 @@ checksum = "12b8adadd720df158f4d70dfe7ccc6adb0472d7c55ca83445f6a5ab3e36f8fb6"
 [[package]]
 name = "librocksdb_sys"
 version = "0.1.0"
-source = "git+https://github.com/pingcap/rust-rocksdb.git#23a604459899f4f7a4c8967f16b6fa623474f27b"
+source = "git+https://github.com/pingcap/rust-rocksdb.git?rev=23a604459899f4f7a4c8967f16b6fa623474f27b#23a604459899f4f7a4c8967f16b6fa623474f27b"
 dependencies = [
  "bzip2-sys",
  "cc",
@@ -1189,7 +1204,7 @@ dependencies = [
 [[package]]
 name = "libtitan_sys"
 version = "0.0.1"
-source = "git+https://github.com/pingcap/rust-rocksdb.git#23a604459899f4f7a4c8967f16b6fa623474f27b"
+source = "git+https://github.com/pingcap/rust-rocksdb.git?rev=23a604459899f4f7a4c8967f16b6fa623474f27b#23a604459899f4f7a4c8967f16b6fa623474f27b"
 dependencies = [
  "bzip2-sys",
  "cc",
@@ -1328,6 +1343,7 @@ dependencies = [
  "futures 0.3.15",
  "gremlin_core",
  "grpcio",
+ "gs_gremlin",
  "itertools 0.7.11",
  "lazy_static 1.4.0",
  "log 0.3.9",
@@ -1903,42 +1919,42 @@ checksum = "d36492546b6af1463394d46f0c834346f31548646f6ba10849802c9c9a27ac33"
 
 [[package]]
 name = "pnet"
-version = "0.23.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9788fd699543f1e945b6b9b89c3059ae8564d9b6c062c44b1c5630e1f1a07a6c"
+checksum = "b657d5b9a98a2c81b82549922b8b15984e49f8120cd130b11a09f81b9b55d633"
 dependencies = [
  "ipnetwork",
  "pnet_base",
  "pnet_datalink",
  "pnet_packet",
- "pnet_sys 0.23.1",
+ "pnet_sys",
  "pnet_transport",
 ]
 
 [[package]]
 name = "pnet_base"
-version = "0.22.0"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4df28acf2fcc77436dd2b91a9a0c2bb617f9ca5f2acefee1a4135058b9f9801f"
+checksum = "4e4688aa497ef62129f302a5800ebde67825f8ff129f43690ca84099f6620bed"
 
 [[package]]
 name = "pnet_datalink"
-version = "0.23.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d27361d7578b410d0eb5fe815c2b2105b01ab770a7c738cb9a231457a809fcc7"
+checksum = "59001c9c4d9d23bf2f61afaaf134a766fd6932ba2557c606b9112157053b9ac7"
 dependencies = [
  "ipnetwork",
  "libc",
  "pnet_base",
- "pnet_sys 0.26.0",
- "winapi 0.2.8",
+ "pnet_sys",
+ "winapi 0.3.9",
 ]
 
 [[package]]
 name = "pnet_macros"
-version = "0.26.0"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbbd5c52c6e04aa720400f9c71cd0e8bcb38cd13421d5caabd9035e9efa47de9"
+checksum = "d894a90dbdbe976e624453fc31b1912f658083778329442dda1cca94f76a3e76"
 dependencies = [
  "regex",
  "syntex",
@@ -1947,18 +1963,18 @@ dependencies = [
 
 [[package]]
 name = "pnet_macros_support"
-version = "0.23.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5326f15c063df43835c5a6e13fc81af2520e9fd104ce1310e15166bb2921d9bd"
+checksum = "4b99269a458570bc06a9132254349f6543d9abc92e88b68d8de934aac9481f6c"
 dependencies = [
  "pnet_base",
 ]
 
 [[package]]
 name = "pnet_packet"
-version = "0.23.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5521d195b9eb5c1632ea07b41ae14363e2d323f8a40ae51ce2c242acd4a9cda5"
+checksum = "33f8238f4eb897a55ca06510cd71afb5b5ca7b4ff2d7188f1ca855fc1710133e"
 dependencies = [
  "glob 0.2.11",
  "pnet_base",
@@ -1969,36 +1985,24 @@ dependencies = [
 
 [[package]]
 name = "pnet_sys"
-version = "0.23.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2f99aaa6904399415eb195f0d4a7c3bcf29de2f677d928ec3703f7aebf3c9f39"
+checksum = "7589e4c4e7ed72a3ffdff8a65d3bea84e8c3a23e19d0a10e8f45efdf632fff15"
 dependencies = [
  "libc",
- "winapi 0.2.8",
- "ws2_32-sys",
-]
-
-[[package]]
-name = "pnet_sys"
-version = "0.26.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73f0de0c52609f157b25d79ce24d9016ab1bbf10cde761397200d634a833872c"
-dependencies = [
- "libc",
- "winapi 0.2.8",
- "ws2_32-sys",
+ "winapi 0.3.9",
 ]
 
 [[package]]
 name = "pnet_transport"
-version = "0.23.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91ac26532b90ad979579f3364ceea0af86ec3cbcd10505101d519d6f49193e9b"
+checksum = "326abdfd2e70e8e943bd58087b59686de170cac050a3b19c9fcc84db01690af5"
 dependencies = [
  "libc",
  "pnet_base",
  "pnet_packet",
- "pnet_sys 0.23.1",
+ "pnet_sys",
 ]
 
 [[package]]
@@ -2483,7 +2487,7 @@ dependencies = [
 [[package]]
 name = "rocksdb"
 version = "0.3.0"
-source = "git+https://github.com/pingcap/rust-rocksdb.git#23a604459899f4f7a4c8967f16b6fa623474f27b"
+source = "git+https://github.com/pingcap/rust-rocksdb.git?rev=23a604459899f4f7a4c8967f16b6fa623474f27b#23a604459899f4f7a4c8967f16b6fa623474f27b"
 dependencies = [
  "crc",
  "libc",

@@ -1,23 +1,22 @@
-/**
+/*
  * Copyright 2020 Alibaba Group Holding Limited.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.maxgraph.v2.grafting.frontend;
+package com.alibaba.maxgraph.gaia;
 
-import com.alibaba.maxgraph.common.cluster.InstanceConfig;
-import com.alibaba.maxgraph.compiler.dfs.DefaultGraphDfs;
-import com.alibaba.maxgraph.structure.graph.TinkerMaxGraph;
+import com.alibaba.graphscope.gaia.broadcast.channel.RpcChannelFetcher;
+import com.alibaba.graphscope.gaia.store.GraphStoreService;
 import com.alibaba.maxgraph.v2.common.DefaultMetaService;
 import com.alibaba.maxgraph.v2.common.MetaService;
 import com.alibaba.maxgraph.v2.common.NodeBase;
@@ -27,10 +26,7 @@ import com.alibaba.maxgraph.v2.common.config.Configs;
 import com.alibaba.maxgraph.v2.common.discovery.*;
 import com.alibaba.maxgraph.v2.common.exception.MaxGraphException;
 import com.alibaba.maxgraph.v2.common.frontend.api.MaxGraphServer;
-import com.alibaba.maxgraph.v2.common.frontend.api.graph.GraphPartitionManager;
 import com.alibaba.maxgraph.v2.common.frontend.api.graph.MaxGraphWriter;
-import com.alibaba.maxgraph.v2.common.frontend.cache.MaxGraphCache;
-import com.alibaba.maxgraph.v2.common.frontend.remote.RemoteGraphPartitionManager;
 import com.alibaba.maxgraph.v2.common.metrics.MetricsAggregator;
 import com.alibaba.maxgraph.v2.common.metrics.MetricsCollectClient;
 import com.alibaba.maxgraph.v2.common.metrics.MetricsCollectService;
@@ -43,6 +39,8 @@ import com.alibaba.maxgraph.v2.common.schema.ddl.DdlExecutors;
 import com.alibaba.maxgraph.v2.common.util.CuratorUtils;
 import com.alibaba.maxgraph.v2.frontend.*;
 import com.alibaba.maxgraph.v2.frontend.compiler.client.QueryStoreRpcClient;
+
+import com.alibaba.maxgraph.v2.grafting.frontend.WrappedSchemaFetcher;
 import io.grpc.NameResolver;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -101,17 +99,12 @@ public class Frontend extends NodeBase {
         this.rpcServer = new RpcServer(configs, localNodeProvider, frontendSnapshotService, clientService,
                 metricsCollectService, clientDdlService);
         int executorCount = CommonConfig.STORE_NODE_COUNT.get(configs);
-        GraphPartitionManager partitionManager = new RemoteGraphPartitionManager(this.metaService);
         WrappedSchemaFetcher wrappedSchemaFetcher = new WrappedSchemaFetcher(snapshotCache, metaService);
 
-        MaxGraphWriter graphWriter = new MaxGraphWriterImpl(realtimeWriter, null, null,
-                snapshotCache, "data", false, new MaxGraphCache());
-        MaxGraphImpl maxGraphImpl = new MaxGraphImpl(this.discovery, wrappedSchemaFetcher, partitionManager,
-                graphWriter);
-        TinkerMaxGraph graph = new TinkerMaxGraph(new InstanceConfig(configs.getInnerProperties()), maxGraphImpl,
-                new DefaultGraphDfs());
-        this.maxGraphServer = new ReadOnlyMaxGraphServer(configs, graph, wrappedSchemaFetcher,
-                new DiscoveryAddressFetcher(this.discovery));
+        // add gaia compiler
+        RpcChannelFetcher gaiaRpcFetcher = new DirectChannelFetcher(this.channelManager, executorCount, RoleType.GAIA_RPC);
+        GraphStoreService gaiaStoreService = new VineyardGraphStore(wrappedSchemaFetcher);
+        this.maxGraphServer = new GaiaGraphServer(configs, gaiaStoreService, gaiaRpcFetcher);
     }
 
     @Override
@@ -150,3 +143,4 @@ public class Frontend extends NodeBase {
         nodeLauncher.start();
     }
 }
+
