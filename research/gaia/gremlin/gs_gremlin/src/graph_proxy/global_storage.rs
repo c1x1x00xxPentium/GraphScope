@@ -325,7 +325,7 @@ fn to_runtime_edge<E: StoreEdge>(e: &E) -> Edge {
         .get_properties()
         .map(|(prop_id, prop_val)| encode_runtime_property(prop_id, prop_val))
         .collect();
-    Edge::new(
+    let mut edge = Edge::new(
         id,
         label.clone(),
         e.get_src_id() as ID,
@@ -335,7 +335,10 @@ fn to_runtime_edge<E: StoreEdge>(e: &E) -> Edge {
             label.unwrap(),
             properties,
         )),
-    )
+    );
+    edge.set_src_label(Label::id(e.get_src_label_id()));
+    edge.set_dst_label(Label::id(e.get_dst_label_id()));
+    edge
 }
 
 /// in maxgraph store, Option<Vec<PropId>>: None means we need all properties, and Some means we need given properties (and Some(vec![]) means we do not need any property)
