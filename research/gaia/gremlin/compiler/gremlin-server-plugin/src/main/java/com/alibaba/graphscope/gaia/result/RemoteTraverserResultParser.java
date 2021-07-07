@@ -26,6 +26,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.step.util.MutablePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public class RemoteTraverserResultParser extends DefaultResultParser {
@@ -83,26 +84,30 @@ public class RemoteTraverserResultParser extends DefaultResultParser {
     @Override
     protected Map<String, Object> extractProperties(GremlinResult.Edge edge) {
         Map<String, Object> result = new HashMap<>();
-        Set<String> keys = graphStore.getEdgeKeys(extractEdgeId(edge));
+        BigInteger edgeId = extractEdgeId(edge);
+        Set<String> keys = graphStore.getEdgeKeys(edgeId);
         for (String key : keys) {
             Optional propertyOpt = graphStore.getEdgeProperty(extractEdgeId(edge), key);
             if (propertyOpt.isPresent()) {
                 result.put(key, propertyOpt.get());
             }
         }
+        logger.info("edge {} properties are {}", edgeId, result);
         return result;
     }
 
     @Override
     protected Map<String, Object> extractProperties(GremlinResult.Vertex vertex) {
         Map<String, Object> result = new HashMap<>();
-        Set<String> keys = graphStore.getVertexKeys(extractVertexId(vertex));
+        BigInteger vertexId = extractVertexId(vertex);
+        Set<String> keys = graphStore.getVertexKeys(vertexId);
         for (String key : keys) {
             Optional propertyOpt = graphStore.getVertexProperty(extractVertexId(vertex), key);
             if (propertyOpt.isPresent()) {
                 result.put(key, Collections.singletonList(ImmutableMap.of("id", 1L, "value", propertyOpt.get())));
             }
         }
+        logger.info("vertex {} properties are {}", vertexId, result);
         return result;
     }
 }

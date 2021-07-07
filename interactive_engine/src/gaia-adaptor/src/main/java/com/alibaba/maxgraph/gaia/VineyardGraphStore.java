@@ -20,11 +20,11 @@ import com.alibaba.maxgraph.compiler.api.schema.GraphSchema;
 import com.alibaba.maxgraph.compiler.api.schema.SchemaFetcher;
 
 public class VineyardGraphStore extends GraphStoreService {
-    public static final String MODERN_PROPERTY_RESOURCE = "modern.properties.json";
+    public static final String VINEYARD_MODERN_PROPERTY_RESOURCE = "vineyard.modern.properties.json";
     private SchemaFetcher schemaFetcher;
 
     public VineyardGraphStore(SchemaFetcher schemaFetcher) {
-        super(MODERN_PROPERTY_RESOURCE);
+        super(VINEYARD_MODERN_PROPERTY_RESOURCE);
         this.schemaFetcher = schemaFetcher;
     }
 

@@ -4,7 +4,7 @@ import com.alibaba.graphscope.gaia.store.GraphStoreService;
 
 public class MockVineyardStore extends GraphStoreService {
     public MockVineyardStore() {
-        super(VineyardGraphStore.MODERN_PROPERTY_RESOURCE);
+        super(VineyardGraphStore.VINEYARD_MODERN_PROPERTY_RESOURCE);
     }
 
     @Override
