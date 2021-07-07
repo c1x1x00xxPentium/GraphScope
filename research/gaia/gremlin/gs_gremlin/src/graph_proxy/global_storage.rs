@@ -336,8 +336,8 @@ fn to_runtime_edge<E: StoreEdge>(e: &E) -> Edge {
             properties,
         )),
     );
-    edge.set_src_label(Label::id(e.get_src_label_id()));
-    edge.set_dst_label(Label::id(e.get_dst_label_id()));
+    edge.set_src_label(Label::Id(e.get_src_label_id() as RuntimeLabelId));
+    edge.set_dst_label(Label::Id(e.get_dst_label_id() as RuntimeLabelId));
     edge
 }
 
