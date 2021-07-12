@@ -18,21 +18,21 @@
 host: 0.0.0.0
 port: 8182
 scriptEvaluationTimeout: 300000
-channelizer: shaded.org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
+channelizer: org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
 graphs: {
   # graph: conf/graph.properties
 }
 scriptEngines: {
   gremlin-groovy: {
-    plugins: { shaded.org.apache.tinkerpop.gremlin.server.jsr223.GremlinServerGremlinPlugin: {},
-               shaded.org.apache.tinkerpop.gremlin.tinkergraph.jsr223.TinkerGraphGremlinPlugin: {},
-               shaded.org.apache.tinkerpop.gremlin.jsr223.ImportGremlinPlugin: {classImports: [java.lang.Math], methodImports: [java.lang.Math#*]}}}}
+    plugins: { org.apache.tinkerpop.gremlin.server.jsr223.GremlinServerGremlinPlugin: {},
+               org.apache.tinkerpop.gremlin.tinkergraph.jsr223.TinkerGraphGremlinPlugin: {},
+               org.apache.tinkerpop.gremlin.jsr223.ImportGremlinPlugin: {classImports: [java.lang.Math], methodImports: [java.lang.Math#*]}}}}
 serializers:
-  - { className: shaded.org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0}
-  - { className: shaded.org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0} # application/vnd.gremlin-v1.0+gryo
-  - { className: shaded.org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { serializeResultToString: true }} # application/vnd.gremlin-v1.0+gryo-stringd
-  - { className: shaded.org.apache.tinkerpop.gremlin.driver.ser.GraphBinaryMessageSerializerV1 } # application/vnd.graphbinary-v1.0
-  - { className: shaded.org.apache.tinkerpop.gremlin.driver.ser.GraphBinaryMessageSerializerV1, config: { serializeResultToString: true }} # application/vnd.graphbinary-v1.0-stringd
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0}
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0} # application/vnd.gremlin-v1.0+gryo
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { serializeResultToString: true }} # application/vnd.gremlin-v1.0+gryo-stringd
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphBinaryMessageSerializerV1 } # application/vnd.graphbinary-v1.0
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphBinaryMessageSerializerV1, config: { serializeResultToString: true }} # application/vnd.graphbinary-v1.0-stringd
 
 metrics: {
   slf4jReporter: {enabled: true, interval: 180000}}

@@ -55,10 +55,10 @@
                                 <!--                                </transformer>-->
                             </transformers>
                             <relocations>
-                                <relocation>
-                                    <pattern>org.apache.tinkerpop</pattern>
-                                    <shadedPattern>shaded.org.apache.tinkerpop</shadedPattern>
-                                </relocation>
+                                <!--<relocation>-->
+                                    <!--<pattern>org.apache.tinkerpop</pattern>-->
+                                    <!--<shadedPattern>shaded.org.apache.tinkerpop</shadedPattern>-->
+                                <!--</relocation>-->
                                 <relocation>
                                     <pattern>com.google.common</pattern>
                                     <shadedPattern>shaded.com.google.common</shadedPattern>
